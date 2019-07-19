@@ -1,5 +1,5 @@
 # gov_dat
-data and data tools for government open data
+Data tools for government open data
 
 
 ### data sources:
