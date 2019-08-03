@@ -1,0 +1,15 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 8
+    DISCLAIMER Char (254) ;
+    LICENCE_NO Char (254) ;
+    PREMISE_NA Char (254) ;
+    PREMISE_AD Char (254) ;
+    CATEGORY Char (254) ;
+    SUB_CATEGO Char (254) ;
+    CURRENCY Date ;
+    WEB_LINK Char (254) ;

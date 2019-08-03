@@ -11,10 +11,15 @@ library("utils")
 library("downloader")
 # package required for wd prompt
 library('svDialogs')
-##############################################################################
-# set working directory
-# or prompt for wd
-dir <- setwd(dlg_dir(default = getwd())$res)
+#############################################################################
+# Define Directories
+#############################################################################
+DataLibrary <- "C:/Users/Romanee/Desktop/DataLibrary"
+#ScriptLibrary <-"C:/Users/Romanee/Desktop/ScriptLibrary"
+#############################################################################
+# alternativly prompt for wd
+#dir <- setwd(dlg_dir(default = getwd())$res)
+dir <- setwd(DataLibrary)
 subDir <- "LIQUOR_LICENCES"
 dir.create(file.path(dir, subDir))
 setwd(file.path(dir, subDir))
@@ -73,7 +78,8 @@ names(dat) <- c( "LICENCE_NO", "PREMISE_NAME", "PREMISE_ADDRESS" ,  "CATEGORY", 
                  "CURRENCY","LAST_UPDATED", "EASTING", "NORTHING" , "LONGITUDE", "LATITUDE" )   
 #
 # write data to csv file - one dated the other generic for easy SSIS upload
-write.csv(dat, paste("liquor_licence ",date_extracted,".csv", sep = ""), row.names = F)
-write.csv(dat, "liquor_licence.csv", row.names = F)
+write.csv(dat, paste0("liquor_licence ",date_extracted,".csv"), row.names = F)
+# write.csv(dat, "liquor_licence.csv", row.names = F)
 ############################################################################
-#!END
+#!END donload_zipExtract_save.R
+############################################################################
