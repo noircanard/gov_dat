@@ -1,3 +1,6 @@
+
+# Note: require ABS_geography_part1.R to run first in order to create a list
+# of links from which to download from
 #############################################################################
 rm(list = ls())               # clear Global Environment
 #############################################################################
