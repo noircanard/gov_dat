@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #############################################################################
 rm(list = ls())               # clear Global Environment
 #############################################################################
@@ -15,8 +14,9 @@ library(openxlsx)
 #############################################################################
 DataLibrary <- "C:/Users/Romanee/Desktop/DataLibrary"
 #ScriptLibrary <-"C:/Users/Romanee/Desktop/ScriptLibrary"
-#############################################################################
-#
+##############################################################################
+# PART 1 download ALL xlsx files and save to working dir.
+##############################################################################
 # location of hospital files
 myhospital <- "https://www.myhospitals.gov.au/about-the-data/download-data"
 #
@@ -39,6 +39,11 @@ names <- gsub("<.*>","",gsub('xlsx\">', '',
 #
 # create a dataframe out of links and names
 hospital_datasets <- data.frame(names, links)
+# set wd to data library
+setwd(DataLibrary)
+dir.create("Online_Datasources")
+write.csv(hospital_datasets, "Online_Datasources/MyHospital_data_download_list.csv", 
+          row.names = FALSE)
 #
 # set wd to data library
 setwd(DataLibrary)
@@ -57,8 +62,8 @@ for ( i in 1:dim(hospital_datasets)[1]){
                 destfile = paste0(hospital_datasets$names[i], ".xlsx"), mode="wb")
 }
 
-
 ##############################################################################
+# PART 2 process xlsx sheets into csv files + metadata
 ##############################################################################
 # assign list of xlsx files to "xlsxfiles"
 xlsxfiles <- list.files(pattern = "xlsx")
@@ -72,12 +77,10 @@ dir.create(new_folder2)
 # create and empty dataframe to store the metadata in
 df_md <- data.frame()
 
-
+# double loop to read in xlsx files and convert to csv files
 for(j in 1:length(xlsxfiles)){
-  # for i in 1 to (1,2,3)
   setwd(paste(DataLibrary,new_folder, sep = "/"))
   for ( i in 1:length(getSheetNames(xlsxfiles[j]))){
-    #1. set working dir. for reading xlsx files
     setwd(paste(DataLibrary,new_folder, sep = "/"))
     #2. read xlsx file sheet i
     wb <- read.xlsx(xlsxfiles[j], i)
@@ -111,74 +114,11 @@ for(j in 1:length(xlsxfiles)){
     write.csv(wb.2, paste0(gsub(" ", "_", TAB), ".csv"), row.names =   F)
     
   }
-  
-  
 }
-
+#
 # write metadata to csv
 write.csv(df_md,  "metadata.csv", row.names =   F)
-
+#
 #############################################################################
 #! END MyHospital_extract.R
-=======
-#############################################################################
-rm(list = ls())               # clear Global Environment
-#############################################################################
-# Call required packages
-#############################################################################
-# package requred for downloading file
-library(downloader)
-# package required for str_extract 
-library(stringr)
-#############################################################################
-# Define Directories
-#############################################################################
-DataLibrary <- "C:/Users/Romanee/Desktop/DataLibrary"
-#ScriptLibrary <-"C:/Users/Romanee/Desktop/ScriptLibrary"
-#############################################################################
-#
-# location of hospital files
-myhospital <- "https://www.myhospitals.gov.au/about-the-data/download-data"
-#
-# read in html page as lines
-page <- readLines(myhospital)
-#
-# pattern used to ID the lines with the download links
-pat_links = 'data-download-track-event.*xlsx'
-# NOTE: captures all but xls file - not bothered
-#
-# links
-links <- paste0("https://www.myhospitals.gov.au/",
-                str_extract(grep(pat_links,page, value=TRUE), 
-                            "excel-datasheets.*xlsx"))
-#
-# names
-names <- gsub("<.*>","",gsub('xlsx\">', '',
-              str_extract(grep(pat_links,page, value=TRUE),
-                          "xlsx.*data")))
-#
-# create a dataframe out of links and names
-hospital_datasets <- data.frame(names, links)
-#
-# set wd to data library
-setwd(DataLibrary)
-#
-#Name of new folder 
-new_folder <- "MyHospital"
-# create new folder where all files will be stored in
-dir.create(new_folder)
-# set wd to new folder
-setwd(new_folder)
-#
-# loop for download, name and save all data files from MyHospital
-for ( i in 1:dim(hospital_datasets)[1]){
-  
-  download.file(url = paste0(hospital_datasets$links[i]), 
-                destfile = paste0(hospital_datasets$names[i], ".xlsx"), mode="wb")
-}
-
-#list.files()
-#############################################################################
-#! END
->>>>>>> eb978355bf50c2ec513a5f91b5c928bd9fa8fd5b
 #############################################################################
