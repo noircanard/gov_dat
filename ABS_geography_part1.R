@@ -2,9 +2,6 @@
 #############################################################################
 # The following is designed to read in ABS geography files (shape and csv) (*)
 # 1) - reading the html and extracting the download links
-# 2) - downloading zip to newly created folder
-# 3) - extracting zip contents
-# 4) - deleteing zip
 # 5) - saving list of links to csv for later use
 #
 #############################################################################
