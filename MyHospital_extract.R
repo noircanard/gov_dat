@@ -7,6 +7,8 @@ rm(list = ls())               # clear Global Environment
 library(downloader)
 # package required for str_extract 
 library(stringr)
+# openxlsx is used to read in xlsx files
+library(openxlsx)
 #############################################################################
 # Define Directories
 #############################################################################
@@ -54,7 +56,67 @@ for ( i in 1:dim(hospital_datasets)[1]){
                 destfile = paste0(hospital_datasets$names[i], ".xlsx"), mode="wb")
 }
 
-#list.files()
+
+##############################################################################
+##############################################################################
+# assign list of xlsx files to "xlsxfiles"
+xlsxfiles <- list.files(pattern = "xlsx")
+
+
+#Name of new folder (2) 
+new_folder2 <- "processed_csv"
+# create new folder where all the newly processed csv files will be stored
+dir.create(new_folder2)
+
+# create and empty dataframe to store the metadata in
+df_md <- data.frame()
+
+
+for(j in 1:length(xlsxfiles)){
+  # for i in 1 to (1,2,3)
+  setwd(paste(DataLibrary,new_folder, sep = "/"))
+  for ( i in 1:length(getSheetNames(xlsxfiles[j]))){
+    #1. set working dir. for reading xlsx files
+    setwd(paste(DataLibrary,new_folder, sep = "/"))
+    #2. read xlsx file sheet i
+    wb <- read.xlsx(xlsxfiles[j], i)
+    #3. identify first non NA row in column 2
+    nms <- min(which(!is.na(wb[, 2])))
+    #4. name columns row identified in step 3
+    colnames(wb) <- wb[nms,]
+    #5. drop all rows before first data row
+    wb.1 <- wb[-c(1:nms),]
+    #6. drop all columns where header is NA
+    wb.2 <- wb.1[!is.na(names(wb.1))]
+    #7. assign sheet name to "TAB"
+    TAB <- getSheetNames(xlsxfiles[j])[i]
+    #8. assign workbook name to "wb_name"
+    wb_name <- xlsxfiles[j]
+    #9. assign count of TABs to "sheet_count"
+    sheet_count <- length(getSheetNames(xlsxfiles[j]))
+    #10. create dataframe for md entry
+    df <- data.frame(
+      file_name = wb_name,
+      TAB_name = TAB,
+      Sheet_count = sheet_count,
+      Rows = dim(wb.2)[1],
+      Columns = dim(wb.2)[2]
+    )
+    #11. append new md dataframe to base dataframe
+    df_md <- rbind(df_md, df)
+    #12 set working dir. for csv files
+    setwd(new_folder2)
+    #13. write dataframe to csv file
+    write.csv(wb.2, paste0(gsub(" ", "_", TAB), ".csv"), row.names =   F)
+    
+  }
+  
+  
+}
+
+# write metadata to csv
+write.csv(df_md,  "metadata.csv", row.names =   F)
+
 #############################################################################
-#! END
+#! END MyHospital_extract.R
 #############################################################################
